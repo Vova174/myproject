@@ -1,13 +1,11 @@
 package web.controller;
 
 
-import hiber.config.HiberConfig;
 import hiber.model.User;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import hiber.service.UserService;
+import hiber.service.UserServiceImpl;
 
 import java.util.List;
 
@@ -15,13 +13,12 @@ import java.util.List;
 @RequestMapping("user")
 public class UserController {
 
-    private final UserService userService;
+    private final UserServiceImpl userService;
 
-    public UserController() {
-        AnnotationConfigApplicationContext context =
-                new AnnotationConfigApplicationContext(HiberConfig.class);
-        this.userService = context.getBean(UserService.class);
+    public UserController(UserServiceImpl userService) {
+        this.userService = userService;
     }
+
 
     @GetMapping()
     public String show(Model model) {
@@ -46,7 +43,7 @@ public class UserController {
         model.addAttribute("user",userService.get(id));
         return "edit";
     }
-    @PatchMapping ("/{id}")
+    @PostMapping ("/{id}")
     public String update(@ModelAttribute("user") User user){
       userService.edit(user);
       return "redirect:/user";
